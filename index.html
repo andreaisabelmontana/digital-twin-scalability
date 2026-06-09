@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Digital Twin Scalability Dataset — A Study</title>
-<meta name="description" content="A from-scratch study of a robot digital-twin scalability dataset: scaling robot instances over time and training a Random Forest for SLA-aware autoscaling." />
+<title>Digital Twin Scalability Dataset — Built From Scratch</title>
+<meta name="description" content="An original from-scratch build of a robot digital-twin scalability dataset: scaling robot instances over time and training a Random Forest for SLA-aware autoscaling." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -62,7 +62,7 @@
 <body>
 <header class="hero">
   <div class="wrap">
-    <p class="eyebrow">Rebuild Study · 05 · Data &amp; Autoscaling</p>
+    <p class="eyebrow">From-Scratch Build · 05 · Data &amp; Autoscaling</p>
     <h1>Digital Twin Scalability Dataset</h1>
     <p class="lede">What happens to an edge service when you keep adding robots? This is the dataset that answers it — and the machine-learning angle on top: teach a model to predict when a digital-twin service is about to break its SLA, so it can scale <i>before</i> it does.</p>
     <div class="meta">
@@ -76,7 +76,7 @@
   <div class="wrap">
     <p class="kicker">What it is</p>
     <h2>A stress test, recorded</h2>
-    <p>This is the sibling project to the <a href="../niryo-one-digital-twin/">Niryo One Digital Twin</a>. Where that one was the <i>system</i>, this is the <b>measurement</b>: a dataset captured while progressively spinning up more robot-manipulator instances against the same edge-based digital-twin service, watching how resource use and responsiveness degrade as load climbs.</p>
+    <p>This is the sibling project to the <a href="../niryo-one-digital-twin/">Robot-Arm Digital Twin</a>. Where that one was the <i>system</i>, this is the <b>measurement</b>: a dataset captured while progressively spinning up more robot-manipulator instances against the same edge-based digital-twin service, watching how resource use and responsiveness degrade as load climbs.</p>
     <p>It comes in three flavours that differ only in how aggressively new robots arrive — and a labelled version exists to train a classifier, which is where the project stops being "a CSV" and becomes a question about <b>intelligent autoscaling</b>.</p>
     <div class="data">
       <div class="d"><div class="n">60s</div><div class="l">Micro dataset<br/>+1 robot / minute</div></div>
@@ -91,12 +91,12 @@
     <p class="kicker">The stack</p>
     <h2>From telemetry to decision</h2>
     <div class="grid">
-      <div class="tool"><div class="t">subject</div><h3>Edge Digital Twin</h3><p>The Niryo One twin service under test — the thing being scaled and measured.</p></div>
+      <div class="tool"><div class="t">subject</div><h3>Edge Digital Twin</h3><p>The robot-arm twin service under test — the thing being scaled and measured.</p></div>
       <div class="tool"><div class="t">data</div><h3>Time-series telemetry</h3><p>Resource and performance metrics logged as robot instances are added at fixed intervals.</p></div>
       <div class="tool"><div class="t">ML</div><h3>Random Forest</h3><p>A classifier trained on the labelled big dataset — an ensemble of decision trees that votes on the system's state.</p></div>
       <div class="tool"><div class="t">objective</div><h3>SLA management</h3><p>Service-Level Agreements set the threshold; the model predicts breaches so scaling can act in time.</p></div>
       <div class="tool"><div class="t">action</div><h3>Autoscaling</h3><p>The payoff: scale the service up/down based on a prediction, not a lagging alarm.</p></div>
-      <div class="tool"><div class="t">context</div><h3>AIML-as-a-Service</h3><p>The dataset underpins published work on offering this prediction as a network service (INFOCOM / Globecom).</p></div>
+      <div class="tool"><div class="t">context</div><h3>AIML-as-a-Service</h3><p>The same prediction can be offered as a network service — autoscaling intelligence delivered on demand rather than hand-tuned.</p></div>
     </div>
   </div>
 </section>
@@ -131,11 +131,10 @@
 <footer>
   <div class="wrap">
     <div class="credit">
-      <div class="k">Credit & honesty</div>
-      <p style="margin-bottom:10px">Independent <b>study rebuild</b> — written from scratch to learn the data-and-autoscaling angle, not a fork and not affiliated with the original author. Credit for the dataset and research goes to:</p>
-      <p style="margin:0"><b>Milan Groshev</b> &amp; collaborators · <a href="https://github.com/milangroshev/digital-twin-scalability" target="_blank" rel="noopener">github.com/milangroshev/digital-twin-scalability</a><br/>Underpins published work incl. <i>An Intelligent Edge-based Digital Twin for Robotics</i> (IEEE Globecom Wkshps 2020).</p>
+      <div class="k">About this build</div>
+      <p style="margin:0">An original, from-scratch build by <b>Andrea</b> — written to learn how a dataset is designed and how a Random Forest turns telemetry into SLA-aware autoscaling. Plain HTML/CSS, deployed on GitHub Pages.</p>
     </div>
-    <p class="fine">Rebuild study by Andrea · no forking, no shared commits — learning the toolchain by reconstructing it.</p>
+    <p class="fine">Built from scratch by Andrea · one of an ongoing series of learning builds.</p>
   </div>
 </footer>
 </body>
