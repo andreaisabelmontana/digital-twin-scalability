@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Digital Twin Scalability Dataset — A Study</title>
+<meta name="description" content="A from-scratch study of a robot digital-twin scalability dataset: scaling robot instances over time and training a Random Forest for SLA-aware autoscaling." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --accent:#4f46e5; --accent-soft:#ecebfe; --ink:#171627; --muted:#5a5870;
+    --line:#e3e1f0; --bg:#fafaff; --card:#ffffff;
+    --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 28px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);padding:.1em .4em;border-radius:4px;color:#3f37c9}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15;letter-spacing:-.01em}
+  header.hero{padding:88px 0 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 22px}
+  h1{font-size:clamp(2.4rem,5.4vw,3.8rem);margin:0 0 18px}
+  .lede{font-size:1.22rem;color:var(--muted);max-width:62ch;margin:0 0 28px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--muted);background:var(--card)}
+  section{padding:54px 0;border-bottom:1px solid var(--line)}
+  .kicker{font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin:0 0 20px}
+  h3{font-size:1.2rem;margin:0 0 6px}
+  p{margin:0 0 18px;max-width:68ch}.muted{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:8px}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .tool .t{font-family:var(--mono);font-size:.78rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+  .tool h3{font-size:1.05rem;font-family:var(--sans);font-weight:600;margin-bottom:6px}
+  .tool p{font-size:.92rem;color:var(--muted);margin:0}
+  ol.flow{counter-reset:s;list-style:none;padding:0;margin:24px 0 0}
+  ol.flow li{position:relative;padding:18px 0 18px 56px;border-top:1px solid var(--line)}
+  ol.flow li:before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:18px;font-family:var(--mono);font-size:.8rem;color:var(--accent);border:1px solid var(--line);border-radius:8px;width:38px;height:38px;display:grid;place-items:center;background:var(--card)}
+  ol.flow li h3{font-family:var(--sans);font-size:1.02rem;font-weight:600;margin:0 0 4px}
+  ol.flow li p{margin:0;font-size:.93rem;color:var(--muted)}
+  .callout{background:var(--accent-soft);border:1px solid #d6d3fb;border-radius:14px;padding:24px 26px;margin-top:8px}
+  .callout p:last-child{margin:0}
+  .data{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .data .d{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+  .data .n{font-family:var(--serif);font-size:1.7rem;color:var(--accent);line-height:1.1}
+  .data .l{font-size:.82rem;color:var(--muted);margin-top:6px}
+  ul.learn{list-style:none;padding:0;margin:8px 0 0}
+  ul.learn li{padding:14px 0 14px 30px;border-top:1px solid var(--line);position:relative;color:var(--muted);max-width:68ch}
+  ul.learn li:before{content:"→";position:absolute;left:0;color:var(--accent);font-family:var(--mono)}
+  ul.learn li b{color:var(--ink);font-weight:600}
+  footer{padding:48px 0 80px}
+  .credit{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .credit .k{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  footer .fine{font-size:.8rem;color:var(--muted);margin-top:22px;text-align:center}
+  @media(max-width:560px){.data{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Rebuild Study · 05 · Data &amp; Autoscaling</p>
+    <h1>Digital Twin Scalability Dataset</h1>
+    <p class="lede">What happens to an edge service when you keep adding robots? This is the dataset that answers it — and the machine-learning angle on top: teach a model to predict when a digital-twin service is about to break its SLA, so it can scale <i>before</i> it does.</p>
+    <div class="meta">
+      <span class="chip">Dataset</span><span class="chip">Edge</span><span class="chip">SLA management</span>
+      <span class="chip">Random Forest</span><span class="chip">Autoscaling</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">What it is</p>
+    <h2>A stress test, recorded</h2>
+    <p>This is the sibling project to the <a href="../niryo-one-digital-twin/">Niryo One Digital Twin</a>. Where that one was the <i>system</i>, this is the <b>measurement</b>: a dataset captured while progressively spinning up more robot-manipulator instances against the same edge-based digital-twin service, watching how resource use and responsiveness degrade as load climbs.</p>
+    <p>It comes in three flavours that differ only in how aggressively new robots arrive — and a labelled version exists to train a classifier, which is where the project stops being "a CSV" and becomes a question about <b>intelligent autoscaling</b>.</p>
+    <div class="data">
+      <div class="d"><div class="n">60s</div><div class="l">Micro dataset<br/>+1 robot / minute</div></div>
+      <div class="d"><div class="n">300s</div><div class="l">Small dataset<br/>+1 robot / 5 min</div></div>
+      <div class="d"><div class="n">3600s</div><div class="l">Big dataset<br/>+1 robot / hour</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">The stack</p>
+    <h2>From telemetry to decision</h2>
+    <div class="grid">
+      <div class="tool"><div class="t">subject</div><h3>Edge Digital Twin</h3><p>The Niryo One twin service under test — the thing being scaled and measured.</p></div>
+      <div class="tool"><div class="t">data</div><h3>Time-series telemetry</h3><p>Resource and performance metrics logged as robot instances are added at fixed intervals.</p></div>
+      <div class="tool"><div class="t">ML</div><h3>Random Forest</h3><p>A classifier trained on the labelled big dataset — an ensemble of decision trees that votes on the system's state.</p></div>
+      <div class="tool"><div class="t">objective</div><h3>SLA management</h3><p>Service-Level Agreements set the threshold; the model predicts breaches so scaling can act in time.</p></div>
+      <div class="tool"><div class="t">action</div><h3>Autoscaling</h3><p>The payoff: scale the service up/down based on a prediction, not a lagging alarm.</p></div>
+      <div class="tool"><div class="t">context</div><h3>AIML-as-a-Service</h3><p>The dataset underpins published work on offering this prediction as a network service (INFOCOM / Globecom).</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">How it works</p>
+    <h2>The experiment loop</h2>
+    <ol class="flow">
+      <li><h3>Define the arrival rate</h3><p>Choose micro / small / big — i.e. how fast new robot instances join the load.</p></li>
+      <li><h3>Scale &amp; record</h3><p>Spin up instances on schedule, logging resource and timing metrics throughout the run.</p></li>
+      <li><h3>Label the states</h3><p>Tag samples (e.g. SLA-met vs. at-risk) to create the supervised target for the big dataset.</p></li>
+      <li><h3>Train the classifier</h3><p>Fit a Random Forest to map live telemetry to a predicted SLA state.</p></li>
+      <li><h3>Predict &amp; scale</h3><p>In deployment, the model flags imminent breaches so the orchestrator scales ahead of failure.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Reflection</p>
+    <h2>What rebuilding it taught me</h2>
+    <ul class="learn">
+      <li><b>A dataset is an experiment design.</b> The three arrival rates aren't arbitrary — they're knobs that let you study scaling behaviour at different time scales.</li>
+      <li><b>Autoscaling wants prediction, not reaction.</b> A threshold alarm fires after you're already in trouble; a classifier can warn you before.</li>
+      <li><b>Random Forests are a sane default.</b> Robust, little tuning, and they tell you which metrics mattered — perfect for a first systems-ML model.</li>
+      <li><b>Labels are the expensive part.</b> Collecting telemetry is easy; deciding what "about to breach" means is the real research.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="credit">
+      <div class="k">Credit & honesty</div>
+      <p style="margin-bottom:10px">Independent <b>study rebuild</b> — written from scratch to learn the data-and-autoscaling angle, not a fork and not affiliated with the original author. Credit for the dataset and research goes to:</p>
+      <p style="margin:0"><b>Milan Groshev</b> &amp; collaborators · <a href="https://github.com/milangroshev/digital-twin-scalability" target="_blank" rel="noopener">github.com/milangroshev/digital-twin-scalability</a><br/>Underpins published work incl. <i>An Intelligent Edge-based Digital Twin for Robotics</i> (IEEE Globecom Wkshps 2020).</p>
+    </div>
+    <p class="fine">Rebuild study by Andrea · no forking, no shared commits — learning the toolchain by reconstructing it.</p>
+  </div>
+</footer>
+</body>
+</html>
